@@ -1,3 +1,4 @@
+package pac;
 import java.util.*;
 
 public class Fcfs{
@@ -12,15 +13,15 @@ int size=sc.nextInt();
 f.p=new int[size][2];
 for(int i=0;i<size;i++) {
 int process=i+1;
-    System.out.println("Enter arrivial time for process"+process);
+    System.out.println("Enter arrivial time for process "+process);
 f.p[i][0]=sc.nextInt();
-System.out.println("Enter burst time for process"+(i+1));
+System.out.println("Enter burst time for process "+(i+1));
 f.p[i][1]=sc.nextInt();
 }
 }
     List<Integer> complete(int[][] arr){
         List<Integer> ls=new ArrayList<>();
-        int initialc=arr[0][0]
+        int initialc=arr[0][0];
         for(int i=0;i<arr.length;i++){
             initialc+=arr[i][1];
             ls.add(initialc);
