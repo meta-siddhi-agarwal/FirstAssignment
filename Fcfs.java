@@ -18,20 +18,20 @@ System.out.println("Enter burst time for process"+(i+1));
 f.p[i][1]=sc.nextInt();
 }
 }
-    List<Integer> complete(int[] arr){
+    List<Integer> complete(int[][] arr){
         List<Integer> ls=new ArrayList<>();
-        int initialc=0;
+        int initialc=arr[0][0]
         for(int i=0;i<arr.length;i++){
-            initialc+=p[i][1];
+            initialc+=arr[i][1];
             ls.add(initialc);
         }
         return ls;
     }
-List<Integer>   wait(int arr[],List<Integer> ls){
+List<Integer>   wait(int arr[][],List<Integer> ls){
     List<Integer> ls1=new ArrayList<>();
         for(int i=0;i<arr.length;i++){
-            int turn=ls.get(i)-p[i][1];
-            int wait=turn-p[i][1];
+            int turn=ls.get(i)-arr[i][1];
+            int wait=turn-arr[i][1];
             ls1.add(wait);
         }
         return ls1;
