@@ -2,137 +2,177 @@ package pac;
 import java.util.*;
 
 public class Fcfs{
-static int p[][];
+	
+	//to control the loop
+static boolean isValid=true;
+	
+	//the array will store all the processes burst time and arrivial time
+static int arrayOfProcess[][];
 
 //arraylist to hold completion time for a process
-static List<Integer> comp=new ArrayList<>();
+static List<Integer> completionList=new ArrayList<>();
 
 //arraylist to hold waiting time for a process
-static List<Integer> wait=new ArrayList<>();
+static List<Integer> waitList=new ArrayList<>();
 
-static Scanner sc=new Scanner(System.in);
+//scanner obj. for taking input
+static Scanner scannerObject=new Scanner(System.in);
 
 public static void main(String args[]){
-	try 
-	{
-System.out.print("Enter no. of processes ");
-int size=sc.nextInt();
-p=new int[size][2];
+	
+	while(isValid) {
+		try 
+		{
+	System.out.print("Enter no. of processes ");
+	int size=scannerObject.nextInt();
+	arrayOfProcess=new int[size][2];
 
-//loop will take inputs in a 2-D array
-for(int i=0;i<size;i++) {
-int process=i+1;
-System.out.println("Enter arrivial time for process "+process);
-int arrivial_time=sc.nextInt();
-if(arrivial_time>=0)p[i][0]=arrivial_time;
-else {
-	System.out.println("Please enter valid input");
-    return;
-}
-System.out.println("Enter burst time for process "+(i+1));
-int burst_time=sc.nextInt();
-if(burst_time>=0)p[i][1]=burst_time;
-else {
-	System.out.println("Please enter valid input");
-	return;
-}
-comp.add(0);
-wait.add(0);
-}
-
-//Giving options to user
-System.out.println("Choose which operation to perform\n"
-+"1. Calculate completion time for each process\n"
-+"2. Calculate waiting time for each process\n"
-+"3. Calculate turn around time for each process\n"
-+"4. Calculate avg. waiting time \n"
-+"5. Max. waiting time for a process");
-int input=sc.nextInt();
-
-//user will enter input
-switch(input) {
-case 1:
-	comp=complete(p);
-	System.out.println(comp);
-	break;
-case 2:
-	comp=complete(p);
-	List<Integer> wait=wait(p,comp);
-	System.out.println(wait);
-	break;
-case 3:
-	comp=complete(p);
-	List<Integer> turn=turn(p,comp);
-	System.out.println(turn);
-	break;
-case 4:
-	wait=wait(p,comp);
-	System.out.println(avg_wait(wait));
-	break;
-case 5:
-	wait=wait(p,comp);
-	System.out.println(max_wait(wait));
-	break;
-default:
-	System.out.println("Please enter valid input");
-}
+	//loop will take inputs in a 2-D array
+	for(int i=0;i<size;i++) {
+	int process=i+1;
+	System.out.println("Enter arrivial time for process "+process);
+	int arrivial_time=scannerObject.nextInt();
+	if(arrivial_time>=0)arrayOfProcess[i][0]=arrivial_time;
+	else {
+		System.out.println("Please enter valid input");
+	    return;
 	}
-catch(Exception e) 
-	{
-	System.out.println("Please enter valid input");
+	System.out.println("Enter burst time for process "+(i+1));
+	int burst_time=scannerObject.nextInt();
+	if(burst_time>=0)arrayOfProcess[i][1]=burst_time;
+	else {
+		System.out.println("Please enter valid input");
+		return;
+	}
+	completionList.add(0);
+	waitList.add(0);
+	}
+	isValid=false;
+		}
+		catch(Exception e) {
+			System.out.println("Enter valid input");
+			scannerObject.nextLine();
+		}
+	}
+	
+	isValid=true;
+	while(isValid) {
+		try {
+			//Giving options to user
+			System.out.println("Choose which operation to perform\n"
+			+"1. Calculate completion time for each process\n"
+			+"2. Calculate waiting time for each process\n"
+			+"3. Calculate turn around time for each process\n"
+			+"4. Calculate avg. waiting time \n"
+			+"5. Max. waiting time for a process\n"
+			+"6. Exit");
+			int input=scannerObject.nextInt();
+
+			//user will enter input
+			switch(input) {
+			
+			// case 1 for calculating completion time
+			case 1:
+				completionList=completion(arrayOfProcess);
+				System.out.println(completionList);
+				break;
+				
+			// case 2 for calculating waiting time
+			case 2:
+				completionList=completion(arrayOfProcess);
+				List<Integer> waitingList=waitTime(arrayOfProcess,completionList);
+				System.out.println(waitingList);
+				break;
+				
+			//case3 for calculating turnAroundTime time
+			case 3:
+				completionList=completion(arrayOfProcess);
+				List<Integer> turnAroundTimeList=turnTime(arrayOfProcess,completionList);
+				System.out.println(turnAroundTimeList);
+				break;
+				
+			//case 4 for calculating avg. waiting time
+			case 4:
+				waitingList=waitTime(arrayOfProcess,completionList);
+				System.out.println(avgWaitTime(waitingList));
+				break;
+				
+			// case 5 for calculating max. waiting time
+			case 5:
+				waitingList=waitTime(arrayOfProcess,completionList);
+				System.out.println(maxWaitTime(waitingList));
+				break;
+				
+			//case 6 for calculating completion time
+			case 6:
+				isValid=false;
+				break;
+				
+			//default test case for printing error msg.
+			default:
+				System.out.println("Please enter valid input");
+			}
+				}
+			catch(Exception e) 
+				{
+				System.out.println("Please enter valid input");
+			    scannerObject.nextLine();
+				}
+
+	}
+		
+	
 }
 
-}
-
-//cal. completion for each process
-    static List<Integer> complete(int[][] arr){
-        List<Integer> ls=new ArrayList<>();
-        int initialc=arr[0][0];
-        for(int i=0;i<arr.length;i++){
-            initialc+=arr[i][1];
-            ls.add(initialc);
+//cal. completion time for each process
+    static List<Integer> completion(int[][] process){
+        List<Integer> completionTime=new ArrayList<>();
+        int initialCompletionTime=process[0][0];
+        for(int i=0;i<process.length;i++){
+        	initialCompletionTime+=process[i][1];
+        	completionTime.add(initialCompletionTime);
         }
-        return ls;
+        return completionTime;
     }
     
-//cal. waiting for each process
-static List<Integer> wait(int arr[][],List<Integer> ls){
-    List<Integer> ls1=new ArrayList<>();
-        for(int i=0;i<arr.length;i++){
-            int turn=ls.get(i)-arr[i][1];
-            int wait=turn-arr[i][1];
-            ls1.add(wait);
+//cal. waiting time for each process
+static List<Integer> waitTime(int process[][],List<Integer> completionTime){
+    List<Integer> waitTime=new ArrayList<>();
+        for(int i=0;i<process.length;i++){
+            int turnAroundTime=completionTime.get(i)-process[i][0];
+            int waitingTime=turnAroundTime-process[i][1];
+            waitTime.add(waitingTime);
         }
-        return ls1;
+        return waitTime;
     }
 
 //cal. turn around time for each process
-static List<Integer> turn(int arr[][],List<Integer> ls){
-    List<Integer> ls2=new ArrayList<>();
-    for(int i=0;i<arr.length;i++){
-        ls2.add(ls.get(i)-arr[i][0]);
+static List<Integer> turnTime(int process[][],List<Integer> completionTime){
+    List<Integer> turnAroundTime=new ArrayList<>();
+    for(int i=0;i<process.length;i++){
+    	turnAroundTime.add(completionTime.get(i)-process[i][0]);
     }
-    return ls2;
+    return turnAroundTime;
 }
 
 //cal. avg. waiting time
-static double avg_wait(List<Integer> l){
+static double avgWaitTime(List<Integer> waitingList){
     double average;
     int total=0;
-    for(int i=0;i<l.size();i++){
-        total+=l.get(i);
+    for(int waitingListIndex=0;waitingListIndex<waitingList.size();waitingListIndex++){
+        total+=waitingList.get(waitingListIndex);
        
     }
-    average=total/l.size();
+    average=total/(waitingList.size()*1.0);
     return average;
 }
 
 //cal. max. waiting time
-static int max_wait(List<Integer> ls){
-    int max=Integer.MIN_VALUE;
-    for(int i=0;i<ls.size();i++){
-        max=Math.max(max,ls.get(i));
+static int maxWaitTime(List<Integer> waitingList){
+    int maxWaitingTime=Integer.MIN_VALUE;
+    for(int waitingListIndex=0;waitingListIndex<waitingList.size();waitingListIndex++){
+        maxWaitingTime=Math.max(maxWaitingTime,waitingList.get(waitingListIndex));
     }
-    return max;
+    return maxWaitingTime;
 }
 }
